@@ -1,4 +1,4 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.dto;
 
 public record RegisterRequest(
         String login,

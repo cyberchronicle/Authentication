@@ -1,6 +1,12 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.cyberchronicle.auth.dto.LoginRequest;
+import org.cyberchronicle.auth.dto.RegisterRequest;
+import org.cyberchronicle.auth.model.User;
+import org.cyberchronicle.auth.model.UserRole;
+import org.cyberchronicle.auth.repository.UserRepository;
+import org.cyberchronicle.auth.repository.UserRoleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -48,17 +53,21 @@ public class UserService {
 
     public User login(LoginRequest loginRequest) {
         var user = userRepository.findByLogin(loginRequest.login())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(this::throwUserNotFound);
         if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
-            throw new InvalidPasswordException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid passport");
         }
         return user;
     }
 
     public List<UserRole> fetchRoles(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            throw new UserNotFoundException();
+            throw throwUserNotFound();
         }
         return userRoleRepository.findByUserId(userId);
+    }
+
+    private ResponseStatusException throwUserNotFound() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     }
 }

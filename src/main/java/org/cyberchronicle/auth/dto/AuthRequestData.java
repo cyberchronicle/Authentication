@@ -1,4 +1,4 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.dto;
 
 import java.util.UUID;
 
@@ -9,6 +9,5 @@ public sealed interface AuthRequestData {
     }
 
     record AccessAuthData(Long userId) implements AuthRequestData {
-
     }
 }

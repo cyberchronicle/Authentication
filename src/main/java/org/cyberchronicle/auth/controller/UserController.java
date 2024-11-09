@@ -1,6 +1,12 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.cyberchronicle.auth.dto.LoginRequest;
+import org.cyberchronicle.auth.dto.RegisterRequest;
+import org.cyberchronicle.auth.dto.TokenResponse;
+import org.cyberchronicle.auth.dto.UserInfo;
+import org.cyberchronicle.auth.service.TokenService;
+import org.cyberchronicle.auth.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

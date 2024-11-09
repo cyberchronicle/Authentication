@@ -1,4 +1,4 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,8 +7,12 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.cyberchronicle.auth.dto.AuthRequestData;
+import org.cyberchronicle.auth.dto.TokenResponse;
+import org.cyberchronicle.auth.model.UserRole;
+import org.cyberchronicle.auth.service.TokenService;
+import org.cyberchronicle.auth.service.UserService;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

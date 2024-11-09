@@ -1,4 +1,4 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

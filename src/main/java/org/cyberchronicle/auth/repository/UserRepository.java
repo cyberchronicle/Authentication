@@ -1,5 +1,6 @@
-package org.cyberchronicle.auth;
+package org.cyberchronicle.auth.repository;
 
+import org.cyberchronicle.auth.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
