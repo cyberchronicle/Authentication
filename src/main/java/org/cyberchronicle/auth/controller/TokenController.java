@@ -14,6 +14,7 @@ import org.cyberchronicle.auth.service.TokenService;
 import org.cyberchronicle.auth.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,7 +31,7 @@ public class TokenController {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @PostMapping("/refresh")
+    @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)
     public TokenResponse refresh(HttpServletRequest request) {
         var authHeader = extractAuthHeader(request);
         var authData = tokenService.parse(authHeader);
@@ -71,11 +72,11 @@ public class TokenController {
     private String extractAuthHeader(HttpServletRequest request) {
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing authorization header");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing authorization header");
         }
         if (!authHeader.startsWith(BEARER_HEADER_PREFIX)) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
+                    HttpStatus.UNAUTHORIZED,
                     "Authorization header is not bearer token"
             );
         }

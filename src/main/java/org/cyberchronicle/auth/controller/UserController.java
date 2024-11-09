@@ -8,6 +8,7 @@ import org.cyberchronicle.auth.dto.UserInfo;
 import org.cyberchronicle.auth.model.UserRole;
 import org.cyberchronicle.auth.service.TokenService;
 import org.cyberchronicle.auth.service.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,19 +17,19 @@ public class UserController {
     private final UserService userService;
     private final TokenService tokenService;
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public TokenResponse register(@RequestBody RegisterRequest registerRequest) {
         var user = userService.register(registerRequest);
         return tokenService.issueNewTokens(user.getId());
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public TokenResponse login(@RequestBody LoginRequest loginRequest) {
         var user = userService.login(loginRequest);
         return tokenService.issueNewTokens(user.getId());
     }
 
-    @GetMapping("/userinfo")
+    @GetMapping(value = "/userinfo", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserInfo userinfo(@RequestParam Long userId) {
         var user = userService.findById(userId);
         return new UserInfo(
