@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.cyberchronicle</groupId>
-	<artifactId>auth-gateway</artifactId>
+	<artifactId>auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>auth</name>
 	<properties>
@@ -24,6 +24,17 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway-mvc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
 		<dependency>

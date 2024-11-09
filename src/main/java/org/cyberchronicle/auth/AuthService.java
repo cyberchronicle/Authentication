@@ -39,6 +39,7 @@ public class AuthService {
                 .compact();
     }
 
+
     public RequestUser parse(String token) {
         var parsed = tokenParser.parseSignedClaims(token);
         var login = parsed.getPayload().get("login", String.class);
