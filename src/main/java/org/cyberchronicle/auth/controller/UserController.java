@@ -5,11 +5,10 @@ import org.cyberchronicle.auth.dto.LoginRequest;
 import org.cyberchronicle.auth.dto.RegisterRequest;
 import org.cyberchronicle.auth.dto.TokenResponse;
 import org.cyberchronicle.auth.dto.UserInfo;
+import org.cyberchronicle.auth.model.UserRole;
 import org.cyberchronicle.auth.service.TokenService;
 import org.cyberchronicle.auth.service.UserService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,19 +32,21 @@ public class UserController {
     public UserInfo userinfo(@RequestParam Long userId) {
         var user = userService.findById(userId);
         return new UserInfo(
+                userId,
                 user.getFirstName(),
                 user.getLastName(),
-                user.getLogin()
+                user.getLogin(),
+                userService.fetchRoles(userId).stream().map(UserRole::getRole).toList()
         );
     }
 
     @PutMapping("/role")
-    public void addRole(@RequestParam UUID userId, @RequestParam String role) {
-
+    public void addRole(@RequestParam Long userId, @RequestParam String role) {
+        userService.addRole(userId, role);
     }
 
     @DeleteMapping("/role")
-    public void revokeRole(@RequestParam UUID userId, @RequestParam String role) {
-
+    public void revokeRole(@RequestParam Long userId, @RequestParam String role) {
+        userService.revokeRole(userId, role);
     }
 }

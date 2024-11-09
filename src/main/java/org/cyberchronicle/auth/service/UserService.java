@@ -61,10 +61,38 @@ public class UserService {
     }
 
     public List<UserRole> fetchRoles(Long userId) {
+        checkUserExists(userId);
+        return userRoleRepository.findByUserId(userId);
+    }
+
+    public void addRole(Long userId, String role) {
+        checkUserExists(userId);
+        var roleView = role.toUpperCase();
+        var hasRole = userRoleRepository.findByUserId(userId)
+                .stream()
+                .map(UserRole::getRole)
+                .anyMatch(x -> x.equals(roleView));
+        if (hasRole) {
+            return;
+        }
+        userRoleRepository.save(UserRole.builder().userId(userId).role(roleView).build());
+    }
+
+    public void revokeRole(Long userId, String role) {
+        checkUserExists(userId);
+        userRoleRepository.findByUserId(userId)
+                .stream()
+                .filter(x -> x.getRole().equals(role))
+                .findAny()
+                .ifPresent(currentRole -> {
+                    userRoleRepository.deleteById(currentRole.getId());
+                });
+    }
+
+    private void checkUserExists(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             throw throwUserNotFound();
         }
-        return userRoleRepository.findByUserId(userId);
     }
 
     private ResponseStatusException throwUserNotFound() {
