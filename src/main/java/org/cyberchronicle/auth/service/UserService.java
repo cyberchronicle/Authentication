@@ -80,13 +80,12 @@ public class UserService {
 
     public void revokeRole(Long userId, String role) {
         checkUserExists(userId);
+        var roleView = role.toUpperCase();
         userRoleRepository.findByUserId(userId)
                 .stream()
-                .filter(x -> x.getRole().equals(role))
+                .filter(x -> x.getRole().equals(roleView))
                 .findAny()
-                .ifPresent(currentRole -> {
-                    userRoleRepository.deleteById(currentRole.getId());
-                });
+                .ifPresent(currentRole -> userRoleRepository.deleteById(currentRole.getId()));
     }
 
     private void checkUserExists(Long userId) {
