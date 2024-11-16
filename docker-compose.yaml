@@ -7,4 +7,26 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "1"
     ports:
-      - "8888:5432"
+      - "5432:5432"
+    networks:
+      - app-network
+
+  auth:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      DB_NAME: authtestdb
+      DB_HOST: postgres
+      DB_PORT: 5432
+
+networks:
+  app-network:
+    driver: bridge
+
