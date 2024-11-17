@@ -6,8 +6,6 @@ services:
       POSTGRES_DB: "authtestdb"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "1"
-    ports:
-      - "5432:5432"
     networks:
       - app-network
 
