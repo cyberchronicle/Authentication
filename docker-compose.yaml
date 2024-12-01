@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: "1"
     networks:
       - app-network
+    volumes:
+      - ./docker-init-schema.sql:/docker-entrypoint-initdb.d/docker_init.sql
 
   auth:
     build:
