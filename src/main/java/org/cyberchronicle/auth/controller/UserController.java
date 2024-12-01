@@ -34,8 +34,8 @@ public class UserController {
         return tokenService.issueNewTokens(user.getId());
     }
 
-    @GetMapping(value = "/userinfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserInfo userinfo(@RequestParam Long userId) {
+    @GetMapping(value = "/userinfo/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserInfo userinfo(@PathVariable Long userId) {
         var user = userService.findById(userId);
         return new UserInfo(
                 userId,
