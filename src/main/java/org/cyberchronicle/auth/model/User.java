@@ -15,9 +15,8 @@ import java.time.Instant;
 @AllArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator="user_id_seq", strategy=GenerationType.SEQUENCE)
     private Long id;
-    @Column(unique = true)
     private String login;
     private String password;
     private String firstName;

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -39,6 +40,7 @@ public class UserService {
                         .lastName(registerRequest.lastName())
                         .login(registerRequest.login())
                         .password(passwordHash)
+                        .registrationDate(Instant.now())
                         .build()
         );
 
