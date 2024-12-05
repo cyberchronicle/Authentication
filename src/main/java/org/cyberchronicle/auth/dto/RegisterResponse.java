@@ -1,18 +1,11 @@
 package org.cyberchronicle.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
 public record RegisterResponse(
         Long userId,
-        @JsonUnwrapped
-        TokenResponse tokenResponse
+        String refresh,
+        String access
 ) {
-    // Getters to hack springdoc
-    public String getRefresh() {
-        return tokenResponse.refresh();
-    }
-
-    public String getAccess() {
-        return tokenResponse.access();
+    public static RegisterResponse of(Long userId, TokenResponse tokenResponse) {
+        return new RegisterResponse(userId, tokenResponse.refresh(), tokenResponse.access());
     }
 }

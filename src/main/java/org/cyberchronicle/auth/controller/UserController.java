@@ -25,7 +25,7 @@ public class UserController {
     public RegisterResponse register(@Valid @RequestBody RegisterRequest registerRequest) {
         var user = userService.register(registerRequest);
         var tokens = tokenService.issueNewTokens(user.getId());
-        return new RegisterResponse(user.getId(), tokens);
+        return RegisterResponse.of(user.getId(), tokens);
     }
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/userinfo/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserInfo userinfo(@PathVariable Long userId) {
+    public UserInfo userinfo(@PathVariable("userId") Long userId) {
         var user = userService.findById(userId);
         return new UserInfo(
                 userId,

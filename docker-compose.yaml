@@ -6,28 +6,31 @@ services:
       POSTGRES_DB: "authtestdb"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "1"
+
+    ports:
+      - "5432:5432"
     networks:
       - app-network
     volumes:
       - ./docker-init-schema.sql:/docker-entrypoint-initdb.d/docker-init-schema.sql
 
-  auth:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    depends_on:
-      - postgres
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
-    environment:
-      DB_USER: postgres
-      DB_PASSWORD: 1
-      DB_NAME: authtestdb
-      DB_HOST: postgres
-      DB_PORT: 5432
-      SIGN_KEY: sajdkfljdsaklfjdsakljfkdsaljfkldsajlkfajds
+  #auth:
+  #  build:
+  #    context: .
+  #    dockerfile: ./Dockerfile
+  #  depends_on:
+  #    - postgres
+  #  ports:
+  #    - "8080:8080"
+  #  networks:
+  #    - app-network
+  #  environment:
+  #    DB_USER: postgres
+  #    DB_PASSWORD: 1
+  #    DB_NAME: authtestdb
+  #    DB_HOST: postgres
+  #    DB_PORT: 5432
+  #    SIGN_KEY: sajdkfljdsaklfjdsakljfkdsaljfkldsajlkfajds
 
 networks:
   app-network:
