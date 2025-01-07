@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.cyberchronicle.auth.dto.AuthErrorResponse;
 import org.cyberchronicle.auth.dto.AuthRequestData;
 import org.cyberchronicle.auth.dto.TokenResponse;
 import org.cyberchronicle.auth.model.UserRole;
@@ -15,6 +16,8 @@ import org.cyberchronicle.auth.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,7 @@ public class TokenController {
     private static final String BEARER_HEADER_PREFIX = "Bearer ";
     private static final String X_USER_ID = "X-User-Id";
     private static final String X_USER_ROLES = "X-User-Roles";
+    private static final String EXPIRED_TOKEN_MESSAGE = "Token has expired";
 
     private final TokenService tokenService;
     private final UserService userService;
@@ -43,31 +47,32 @@ public class TokenController {
     }
 
     @GetMapping("/auth")
-    public void auth(HttpServletRequest request, HttpServletResponse response) {
+    public void auth(HttpServletRequest request, HttpServletResponse response) throws JsonProcessingException {
         var authHeader = extractAuthHeader(request);
-        try {
-            var authData = tokenService.parse(authHeader);
-            if (!(authData instanceof AuthRequestData.AccessAuthData)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token type");
-            }
-
-            var userId = authData.userId();
-            var roles = userService.fetchRoles(userId).stream()
-                    .map(UserRole::getRole)
-                    .toList();
-            var jsonRoles = objectMapper.writeValueAsString(roles);
-
-            response.addHeader(X_USER_ID, userId.toString());
-            response.addHeader(X_USER_ROLES, jsonRoles);
-        } catch (JwtException exc) {
-            var msg = "Permission denied";
-            if (exc instanceof ExpiredJwtException) {
-                msg = "Token has expired";
-            }
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, msg);
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(500));
+        var authData = tokenService.parse(authHeader);
+        if (!(authData instanceof AuthRequestData.AccessAuthData)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token type");
         }
+
+        var userId = authData.userId();
+        var roles = userService.fetchRoles(userId).stream()
+                .map(UserRole::getRole)
+                .toList();
+        var jsonRoles = objectMapper.writeValueAsString(roles);
+
+        response.addHeader(X_USER_ID, userId.toString());
+        response.addHeader(X_USER_ROLES, jsonRoles);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<AuthErrorResponse> expiredTokenHandler(JwtException exception) {
+        var msg = "Permission denied";
+        if (exception instanceof ExpiredJwtException) {
+            msg = "Token has expired";
+        }
+        var res = new AuthErrorResponse(msg);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(res);
     }
 
     private String extractAuthHeader(HttpServletRequest request) {
